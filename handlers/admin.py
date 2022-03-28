@@ -49,7 +49,7 @@ async def load_description(message: types.Message, state: FSMContext):
 # @dp.message_handler(state=FSMAdmin.price)
 async def load_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['description'] = float(message.text)
+        data['price'] = float(message.text)
     async with state.proxy() as data:
         await message.reply(str(data))
     await state.finish()
