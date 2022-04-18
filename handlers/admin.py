@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
-from create_bot import dp, bot
+from create_bot import bot
 from aiogram.dispatcher.filters import Text
 
 ID = None
@@ -29,6 +29,16 @@ async def cm_start(message: types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.photo.set()
         await message.reply('Загрузи фото')
+
+
+# @dp.message_handler(state="*", commands='отмена')
+# @dp.message_handler(Text(equals='отмена', ignore_case=True), state="*")
+async def cancel_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.answer('OK')
 
 
 # Ловим первый ответ от пользователя
@@ -68,22 +78,13 @@ async def load_price(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-# @dp.message_handler(state="*", commands='отмена')
-# @dp.message_handler(Text(equals='отмена', ignore_case=True), state="*")
-async def cancel_handler(message: types.Message, state: FSMContext):
-    current_stste = await state.get_state()
-    if current_stste is None:
-        return
-    await state.finish()
-    await message.answer('OK')
-
-
 def register_handler_admin(dp_1: Dispatcher):
     dp_1.register_message_handler(cm_start, commands=['загрузить'], state=None)
+    dp_1.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
+    dp_1.register_message_handler(make_changes_command, commands=['moderator'], is_chat_admin=True)
     dp_1.register_message_handler(load_photo, content_types=['photo'], state=FSMAdmin.photo)
     dp_1.register_message_handler(load_name, state=FSMAdmin.name)
     dp_1.register_message_handler(load_description, state=FSMAdmin.description)
     dp_1.register_message_handler(load_price, state=FSMAdmin.price)
-    dp_1.register_message_handler(cancel_handler, state="*", commands='отиена')
-    dp_1.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
-    dp_1.register_message_handler(make_changes_command, commands=['moderator'], is_chat_admin=True)
+
+
