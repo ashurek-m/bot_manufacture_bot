@@ -15,5 +15,4 @@ async def url(message: types.Message):
 
 
 def register_handler_other(dp_1: Dispatcher):
-    dp_1.register_message_handler(url, commands=['ссылки'])
     dp_1.register_message_handler(echo_send)
