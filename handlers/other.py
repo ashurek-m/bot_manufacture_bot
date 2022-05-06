@@ -10,8 +10,10 @@ async def echo_send(message: types.Message):
     # await bot.send_message(message.from_user.id,message.text)
 
 
+'''
 async def url(message: types.Message):
     await message.answer('Ссылочки', reply_markup=urlkb)
+'''
 
 
 def register_handler_other(dp_1: Dispatcher):
